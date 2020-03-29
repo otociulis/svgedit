@@ -20,6 +20,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <!{else}-->
     <script src="jquery.min.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-firestore.js"></script>
+
     <!--{endif}-->
 
     <!-- Lacking browser support -->
@@ -49,6 +54,29 @@
       href="https://github.com/SVG-Edit/svgedit/commits/master.atom"/>
 
     <title>SVG-edit</title>
+
+    <script defer>
+      var firebaseConfig = {
+    apiKey: "AIzaSyAwLKhdS6k1Ybjo6rD7wKMcJtPy7_o4iZM",
+    authDomain: "eval-d6e9f.firebaseapp.com",
+    databaseURL: "https://eval-d6e9f.firebaseio.com",
+    projectId: "eval-d6e9f",
+    storageBucket: "eval-d6e9f.appspot.com",
+    messagingSenderId: "519361215930",
+    appId: "1:519361215930:web:5e752e60bd64dcdaf33183",
+    measurementId: "G-CNVY019W4G"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+
+
+    window.db = firebase.firestore();
+    window.docRef = window.db.collection("documents").doc("test");
+
+    window.elementsRef = docRef.collection("elements");
+
+    </script>
 </head>
 <body>
 

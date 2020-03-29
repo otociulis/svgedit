@@ -2610,7 +2610,20 @@ const mouseUp = function (evt) {
           curProperties.stroke_width = selected.getAttribute('stroke-width');
           curProperties.stroke_dasharray = selected.getAttribute('stroke-dasharray');
           curProperties.stroke_linejoin = selected.getAttribute('stroke-linejoin');
-          curProperties.stroke_linecap = selected.getAttribute('stroke-linecap');
+          curProperties.stroke_linecap = selected.getAttribute('stroke-linecap');          
+
+          const attr = {};
+          for (let key of selected.getAttributeNames()) {
+            attr[key] = selected.getAttribute(key);
+          }
+
+          window.elementsRef.where("attr.id", "==", selected.id).get().then(response => {
+            response.docs.forEach(doc => { // This should be just single object
+              doc.ref.update({
+                attr
+              });
+            });
+          });
         }
 
         if (selected.tagName === 'text') {
@@ -2705,6 +2718,21 @@ const mouseUp = function (evt) {
     attrs = $(element).attr(['width', 'height']);
     // Image should be kept regardless of size (use inherit dimensions later)
     keep = (attrs.width || attrs.height) || currentMode === 'image';
+
+    window.elementsRef.add({
+      element: element.nodeName,
+      curStyles: true,
+      attr: {
+        ...$(element).attr(['width', 'height', 'fill', 'id', 'opacity', 'stroke', 'stroke-width', 'x', 'y', 'style'])
+      }
+    });
+
+    /*window.docRef.update({
+      elements: firebase.firestore.FieldValue.arrayUnion({
+        
+      })
+    });*/
+
     break;
   case 'circle':
     keep = (element.getAttribute('r') !== '0');

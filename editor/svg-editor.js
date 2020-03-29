@@ -454,7 +454,9 @@ editor.loadContentAndPrefs = function () {
     const name = 'svgedit-' + curConfig.canvasName;
     const cached = editor.storage.getItem(name);
     if (cached) {
-      editor.loadFromString(cached);
+      //editor.loadFromString(cached); <-- Don't load stored values, we will load it from firebase
+
+      editor.loadFromFirebase();
     }
   }
 
@@ -474,6 +476,37 @@ editor.loadContentAndPrefs = function () {
     }
   });
 };
+
+editor.loadFromFirebase = function() {
+  editor.ready(async function () {
+    try {
+      window.elementsRef.onSnapshot(snapshot => {
+        const changes = snapshot.docChanges();
+        for(let i = 0; i < changes.length;i++) {
+          const change = changes[i];
+          const data = change.doc.data();
+
+          switch(change.type) {
+            case "added":
+            case "modified":
+              const el = document.getElementById(data.attr.id);
+              if (el === null) {
+                svgCanvas.addSVGElementFromJson(data);
+              } else {
+                for (let [key, value] of Object.entries(data.attr)) {
+                  el.setAttribute(key, value);
+                }
+              }
+              break;
+          }
+        }
+      });
+
+    } catch (err) {
+      console.error(err);
+    }
+  });
+}
 
 /**
 * Allows setting of preferences or configuration (including extensions).
